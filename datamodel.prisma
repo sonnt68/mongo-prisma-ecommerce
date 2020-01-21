@@ -1,0 +1,140 @@
+type CategoryType @db(name: "category_type") {
+  id: ID! @id
+  name: String!
+  slug: String!
+  image: String
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Category @db(name: "category") {
+  id: ID! @id
+  name: String!
+  slug: String!
+  image: String
+  parent: [CategoryType!] @relation(link: INLINE)
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Product @db(name: "product") {
+  id: ID! @id
+  name: String!
+  description: String!
+  unit: String
+  price: Int!
+  sale_price: Int
+  discount_percent: Int
+  quantity: Int!
+  image: String
+  category_type: [CategoryType!] @relation(link: INLINE)
+  category: [Category] @relation(link: INLINE)
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Customer @db(name: "customer") {
+  id: ID! @id
+  name: String!
+  phone: String
+  unit: String
+  total_order: Int
+  total_amount: Int
+  email: String!
+  password: String!
+  image: String
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Staff @db(name: "staff") {
+  id: ID! @id
+  name: String!
+  phone: String
+  email: String!
+  password: String!
+  role: Role @default(value: UNSET)
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+  SHIPER
+  UNSET
+}
+
+type Order @db(name: "order") {
+  id: ID! @id
+  ship_address: String!
+  amount: Int!
+  payment_method: PaymentMethod @default(value: CASH_ON_SHIP)
+  status: StatusOrder @default(value: PROCESSING)
+  customer: [Customer!] @relation(link: INLINE)
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+enum PaymentMethod {
+  BANKING
+  CASH_ON_SHIP
+}
+
+enum StatusOrder {
+  SHIPPING
+  PENDING
+  FAILED
+  PROCESSING
+}
+
+type Coupon @db(name: "coupon") {
+  id: ID! @id
+  campaings_name: String!
+  discount_percent: Int!
+  discount_code: Int!
+  number_code: Int!
+  category_type: [CategoryType!] @relation(link: INLINE)
+  minimum_amount_required: Int
+  expiration_date: String!
+  status: StatusCoupon @default(value: REVOKED)
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+enum StatusCoupon {
+  ACTIVE
+  REVOKED
+}
+
+type Site @db(name: "site") {
+  id: ID! @id
+  name: String
+  description: String
+  status: StatusSite @default(value: ACTIVE)
+  indexFile: String @db(name: "index_file")
+  isDeleted: Int @db(name: "is_deleted")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+enum StatusSite {
+  ACTIVE
+  MAINTAIN
+  DOWN
+}
